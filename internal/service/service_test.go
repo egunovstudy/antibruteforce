@@ -61,10 +61,98 @@ func TestService_BlacklistWins(t *testing.T) {
 
 func TestService_ValidationError(t *testing.T) {
 	svc := New(repoStub{}, limiterStub{allow: true})
-	_, err := svc.Check(context.Background(), model.AuthAttempt{
-		Login: "alice", Password: "x", IP: "invalid",
+	ctx := context.Background()
+
+	t.Run("invalid ip", func(t *testing.T) {
+		_, err := svc.Check(ctx, model.AuthAttempt{
+			Login: "alice", Password: "x", IP: "invalid",
+		})
+		if err == nil {
+			t.Fatal("expected validation error for invalid ip")
+		}
 	})
-	if err == nil {
-		t.Fatal("expected validation error")
-	}
+
+	t.Run("empty login", func(t *testing.T) {
+		_, err := svc.Check(ctx, model.AuthAttempt{
+			Login: "", Password: "x", IP: "1.1.1.1",
+		})
+		if err == nil {
+			t.Fatal("expected validation error for empty login")
+		}
+	})
+
+	t.Run("empty password", func(t *testing.T) {
+		_, err := svc.Check(ctx, model.AuthAttempt{
+			Login: "alice", Password: "", IP: "1.1.1.1",
+		})
+		if err == nil {
+			t.Fatal("expected validation error for empty password")
+		}
+	})
+}
+
+func TestService_Reset(t *testing.T) {
+	svc := New(repoStub{}, limiterStub{})
+	ctx := context.Background()
+
+	t.Run("success", func(t *testing.T) {
+		err := svc.Reset(ctx, model.ResetRequest{Login: "alice", IP: "1.1.1.1"})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("empty login", func(t *testing.T) {
+		err := svc.Reset(ctx, model.ResetRequest{Login: " ", IP: "1.1.1.1"})
+		if err == nil {
+			t.Fatal("expected error for empty login")
+		}
+	})
+
+	t.Run("invalid ip", func(t *testing.T) {
+		err := svc.Reset(ctx, model.ResetRequest{Login: "alice", IP: "invalid"})
+		if err == nil {
+			t.Fatal("expected error for invalid ip")
+		}
+	})
+}
+
+func TestService_NetworkManagement(t *testing.T) {
+	svc := New(repoStub{}, limiterStub{})
+	ctx := context.Background()
+
+	t.Run("add success", func(t *testing.T) {
+		err := svc.AddNetwork(ctx, model.ListTypeWhitelist, "192.168.1.0/24")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("add invalid cidr", func(t *testing.T) {
+		err := svc.AddNetwork(ctx, model.ListTypeWhitelist, "invalid")
+		if err == nil {
+			t.Fatal("expected error for invalid CIDR")
+		}
+	})
+
+	t.Run("add ipv6 cidr", func(t *testing.T) {
+		err := svc.AddNetwork(ctx, model.ListTypeWhitelist, "2001:db8::/32")
+		if err == nil {
+			t.Fatal("expected error for IPv6 CIDR")
+		}
+	})
+
+	t.Run("remove success", func(t *testing.T) {
+		err := svc.RemoveNetwork(ctx, model.ListTypeWhitelist, "192.168.1.0/24")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("remove invalid cidr", func(t *testing.T) {
+		err := svc.RemoveNetwork(ctx, model.ListTypeWhitelist, "invalid")
+		if err == nil {
+			t.Fatal("expected error for invalid CIDR")
+		}
+	})
 }
