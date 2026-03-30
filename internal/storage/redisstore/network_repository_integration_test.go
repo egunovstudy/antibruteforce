@@ -1,12 +1,12 @@
 package redisstore
 
 import (
+	"antibf/internal/model"
 	"context"
 	"net"
 	"os"
 	"testing"
 
-	"antibf/internal/model"
 	redis "github.com/redis/go-redis/v9"
 )
 

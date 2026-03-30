@@ -1,14 +1,13 @@
 package httpapi
 
 import (
+	"antibf/internal/model"
+	"antibf/internal/service"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
-
-	"antibf/internal/model"
-	"antibf/internal/service"
 )
 
 type Handler struct {

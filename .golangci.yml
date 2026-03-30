@@ -5,21 +5,26 @@ linters-settings:
   funlen:
     lines: 150
     statements: 80
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(antibf)
+  gofumpt:
+    extra-rules: true
 
 linters:
   disable-all: true
   enable:
     - asciicheck
     - bodyclose
-    - deadcode
+    - copyloopvar
     - dogsled
     - dupl
     - durationcheck
     - errorlint
     - exhaustive
-    - exportloopref
     - funlen
-    - gci
     - gocognit
     - goconst
     - gocritic
@@ -34,7 +39,6 @@ linters:
     - gosec
     - gosimple
     - govet
-    - ifshort
     - importas
     - ineffassign
     - lll
@@ -50,7 +54,6 @@ linters:
     - rowserrcheck
     - sqlclosecheck
     - staticcheck
-    - structcheck
     - stylecheck
     - tagliatelle
     - thelper
@@ -59,6 +62,5 @@ linters:
     - unconvert
     - unparam
     - unused
-    - varcheck
     - wastedassign
     - whitespace

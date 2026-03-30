@@ -1,13 +1,12 @@
 package service
 
 import (
+	"antibf/internal/model"
+	"antibf/internal/ratelimit"
 	"context"
 	"fmt"
 	"net"
 	"strings"
-
-	"antibf/internal/model"
-	"antibf/internal/ratelimit"
 )
 
 type NetworkListRepository interface {

@@ -1,6 +1,8 @@
 package httpapi
 
 import (
+	"antibf/internal/model"
+	"antibf/internal/service"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -9,9 +11,6 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
-
-	"antibf/internal/model"
-	"antibf/internal/service"
 )
 
 type repoStub struct {

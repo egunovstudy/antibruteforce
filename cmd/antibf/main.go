@@ -1,6 +1,7 @@
 package main
 
 import (
+	"antibf/internal/model"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -10,8 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-
-	"antibf/internal/model"
 )
 
 func main() {

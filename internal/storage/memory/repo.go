@@ -1,12 +1,11 @@
 package memory
 
 import (
+	"antibf/internal/model"
 	"context"
 	"fmt"
 	"net"
 	"sync"
-
-	"antibf/internal/model"
 )
 
 // Repository is an in-memory repo mainly for tests and MVP runtime.

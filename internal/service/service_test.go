@@ -1,11 +1,10 @@
 package service
 
 import (
+	"antibf/internal/model"
 	"context"
 	"net"
 	"testing"
-
-	"antibf/internal/model"
 )
 
 type repoStub struct {

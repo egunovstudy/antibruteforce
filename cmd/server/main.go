@@ -1,6 +1,11 @@
 package main
 
 import (
+	"antibf/internal/config"
+	"antibf/internal/httpapi"
+	"antibf/internal/ratelimit"
+	"antibf/internal/service"
+	"antibf/internal/storage/redisstore"
 	"context"
 	"errors"
 	"log"
@@ -10,11 +15,6 @@ import (
 	"syscall"
 	"time"
 
-	"antibf/internal/config"
-	"antibf/internal/httpapi"
-	"antibf/internal/ratelimit"
-	"antibf/internal/service"
-	"antibf/internal/storage/redisstore"
 	"github.com/redis/go-redis/v9"
 )
 
