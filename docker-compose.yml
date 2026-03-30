@@ -1,0 +1,30 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: antibf_redis
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    container_name: antibf_app
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      HTTP_PORT: 8080
+      REDIS_ADDR: redis:6379
+      REDIS_DB: 0
+      LOGIN_LIMIT: 10
+      PASSWORD_LIMIT: 100
+      IP_LIMIT: 1000
+      BUCKET_TTL: 10m
+      REFILL_PERIOD: 1m
+    ports:
+      - "8080:8080"

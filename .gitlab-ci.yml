@@ -1,0 +1,49 @@
+stages:
+  - lint
+  - test
+  - build
+
+variables:
+  GOCACHE: "$CI_PROJECT_DIR/.cache/go-build"
+  GOMODCACHE: "$CI_PROJECT_DIR/.cache/go-mod"
+  GOPATH: "$CI_PROJECT_DIR/.go"
+  REDIS_ADDR: "redis:6379"
+
+default:
+  image: golang:1.23
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - .cache/go-build
+      - .cache/go-mod
+      - .go/pkg/mod
+
+before_script:
+  - go version
+  - go mod download
+
+lint:
+  stage: lint
+  script:
+    - gofmt -l . | tee /tmp/gofmt.out
+    - test ! -s /tmp/gofmt.out
+    - go vet ./...
+
+test:
+  stage: test
+  services:
+    - name: redis:7-alpine
+      alias: redis
+  script:
+    - go test -race ./...
+
+build:
+  stage: build
+  script:
+    - mkdir -p bin
+    - go build -o bin/antibf-server ./cmd/server
+    - go build -o bin/antibf-cli ./cmd/antibf
+  artifacts:
+    paths:
+      - bin/
+    expire_in: 1 week
